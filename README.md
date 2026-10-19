@@ -110,10 +110,3 @@ depscope/
 └── docs/             # Documentation
 ```
 
-## License
-
-MIT
-
-## Roadmap
-
-See [docs/PRD.md](docs/PRD.md) for the complete product requirements and roadmap.
