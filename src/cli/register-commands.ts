@@ -6,6 +6,10 @@ import { whyCommand } from "./commands/why.js";
 import { dependentsCommand } from "./commands/dependents.js";
 import { duplicatesCommand } from "./commands/duplicates.js";
 import { doctorCommand } from "./commands/doctor.js";
+import { impactCommand } from "./commands/impact.js";
+import { reportCommand } from "./commands/report.js";
+import { sizeCommand } from "./commands/size.js";
+import { unusedCommand } from "./commands/unused.js";
 
 export function registerCommands(program: Command): void {
   program
@@ -44,4 +48,25 @@ export function registerCommands(program: Command): void {
     .command("doctor")
     .description("Diagnose project and lockfile issues")
     .action(doctorCommand);
+
+  program
+    .command("unused")
+    .description("Detect potentially unused direct dependencies")
+    .action(unusedCommand);
+
+  program
+    .command("size")
+    .description("Measure installed dependency footprint")
+    .option("--top <n>", "Show the largest N packages", "20")
+    .action(sizeCommand);
+
+  program
+    .command("impact <package>")
+    .description("Analyze graph impact of changing a package")
+    .action(impactCommand);
+
+  program
+    .command("report")
+    .description("Generate a consolidated dependency report")
+    .action(reportCommand);
 }

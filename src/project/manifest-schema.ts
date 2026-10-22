@@ -14,6 +14,7 @@ export const manifestSchema = z
     devDependencies: dependencyMapSchema.optional(),
     optionalDependencies: dependencyMapSchema.optional(),
     peerDependencies: dependencyMapSchema.optional(),
+    scripts: dependencyMapSchema.optional(),
   })
   .passthrough();
 
