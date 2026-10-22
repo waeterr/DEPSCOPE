@@ -12,6 +12,14 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waeterr/DEPSCOPE.git"
+  },
+  "bugs": {
+    "url": "https://github.com/waeterr/DEPSCOPE/issues"
+  },
+  "homepage": "https://github.com/waeterr/DEPSCOPE#readme",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -21,7 +29,9 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run build && npm run typecheck && npm run lint && npm test && npm run format:check",
+    "prepack": "npm run verify"
   },
   "keywords": [
     "dependency",
@@ -37,7 +47,6 @@
   "dependencies": {
     "commander": "^12.1.0",
     "picocolors": "^1.1.1",
-    "typescript-eslint": "^8.71.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -48,6 +57,7 @@
     "prettier": "^3.4.2",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
+    "typescript-eslint": "^8.71.2",
     "vitest": "^2.1.8"
   }
 }
