@@ -13,6 +13,8 @@ import { unusedCommand } from "./commands/unused.js";
 import { snapshotCommand } from "./commands/snapshot.js";
 import { historyCommand } from "./commands/history.js";
 import { diffCommand } from "./commands/diff.js";
+import { graphCommand } from "./commands/graph.js";
+import { completionsCommand } from "./commands/completions.js";
 
 export function registerCommands(program: Command): void {
   program
@@ -89,4 +91,15 @@ export function registerCommands(program: Command): void {
     .description("Compare a snapshot with the current project")
     .option("--from <id>", "Select a snapshot ID")
     .action(diffCommand);
+
+  program
+    .command("graph")
+    .description("Export dependency graph data")
+    .option("--format <format>", "Output format: json or dot", "json")
+    .action(graphCommand);
+
+  program
+    .command("completions <shell>")
+    .description("Generate shell completion scripts")
+    .action(completionsCommand);
 }
