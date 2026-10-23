@@ -10,6 +10,9 @@ import { impactCommand } from "./commands/impact.js";
 import { reportCommand } from "./commands/report.js";
 import { sizeCommand } from "./commands/size.js";
 import { unusedCommand } from "./commands/unused.js";
+import { snapshotCommand } from "./commands/snapshot.js";
+import { historyCommand } from "./commands/history.js";
+import { diffCommand } from "./commands/diff.js";
 
 export function registerCommands(program: Command): void {
   program
@@ -69,4 +72,21 @@ export function registerCommands(program: Command): void {
     .command("report")
     .description("Generate a consolidated dependency report")
     .action(reportCommand);
+
+  program
+    .command("snapshot")
+    .description("Save a local dependency snapshot")
+    .option("--name <name>", "Set a snapshot name")
+    .action(snapshotCommand);
+
+  program
+    .command("history")
+    .description("List local dependency snapshots")
+    .action(historyCommand);
+
+  program
+    .command("diff")
+    .description("Compare a snapshot with the current project")
+    .option("--from <id>", "Select a snapshot ID")
+    .action(diffCommand);
 }
