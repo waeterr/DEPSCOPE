@@ -1,6 +1,7 @@
 import type { Diagnostic, ProjectInfo } from "../core/models/types.js";
 import { discoverProject } from "./discovery.js";
 import { readManifest } from "./manifest-reader.js";
+import { detectWorkspaces, type WorkspaceInfo } from "./workspace-detection.js";
 import {
   readNpmGraph,
   type NpmGraphResult,
@@ -10,12 +11,25 @@ export interface ProjectAnalysis {
   project: ProjectInfo;
   diagnostics: Diagnostic[];
   graph?: NpmGraphResult;
+  workspace?: WorkspaceInfo;
 }
 
 export async function analyzeProject(cwd: string): Promise<ProjectAnalysis> {
   const discovery = await discoverProject(cwd);
   const manifest = await readManifest(discovery.rootPath);
+  const workspace = await detectWorkspaces(discovery.rootPath, manifest);
   const diagnostics: Diagnostic[] = [];
+
+  if (workspace) {
+    diagnostics.push({
+      code: "WORKSPACE_PARTIAL_ANALYSIS",
+      severity: "info",
+      title: "Workspace detected",
+      message: `Detected ${workspace.packagePaths.length} workspace package(s). Analysis currently uses the root npm lockfile.`,
+      evidence: workspace.packagePaths,
+      confidence: "high",
+    });
+  }
 
   if (discovery.conflictingLockfiles.length > 0) {
     diagnostics.push({
@@ -51,10 +65,10 @@ export async function analyzeProject(cwd: string): Promise<ProjectAnalysis> {
         "Use your normal package-manager workflow to create a package-lock.json.",
       confidence: "high",
     });
-    return { project, diagnostics };
+    return { project, diagnostics, ...(workspace ? { workspace } : {}) };
   }
 
   const graph = await readNpmGraph(discovery.rootPath, manifest);
   project.lockfileVersion = graph.lockfileVersion;
-  return { project, diagnostics, graph };
+  return { project, diagnostics, graph, ...(workspace ? { workspace } : {}) };
 }
