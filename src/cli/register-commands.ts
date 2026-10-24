@@ -100,6 +100,13 @@ export function registerCommands(program: Command): void {
     .command("diff")
     .description("Compare a snapshot with the current project")
     .option("--from <id>", "Select a snapshot ID")
+    .option("--max-added <n>", "Fail if added packages exceed N", Number)
+    .option("--max-removed <n>", "Fail if removed packages exceed N", Number)
+    .option(
+      "--max-version-changes <n>",
+      "Fail if version changes exceed N",
+      Number
+    )
     .action(diffCommand);
 
   program

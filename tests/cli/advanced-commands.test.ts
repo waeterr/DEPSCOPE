@@ -35,6 +35,12 @@ describe("CLI advanced commands", () => {
     expect(result.command).toBe("report");
   });
 
+  it("validates diff CI thresholds", () => {
+    expect(() => run("diff", "--max-added", "-1")).toThrow(
+      /--max-added must be a non-negative integer/
+    );
+  });
+
   it("runs unused command without crashing", () => {
     const output = run("unused");
     expect(typeof output).toBe("string");

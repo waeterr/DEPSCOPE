@@ -7,12 +7,27 @@ import { analysisJson, cwdFrom, output } from "./shared.js";
 
 interface DiffOptions {
   from?: string;
+  maxAdded?: number;
+  maxRemoved?: number;
+  maxVersionChanges?: number;
 }
 
 export async function diffCommand(
   options: DiffOptions,
   command: Command
 ): Promise<void> {
+  for (const [option, maximum] of Object.entries({
+    "--max-added": options.maxAdded,
+    "--max-removed": options.maxRemoved,
+    "--max-version-changes": options.maxVersionChanges,
+  })) {
+    if (maximum !== undefined && (!Number.isInteger(maximum) || maximum < 0)) {
+      throw new DepScopeError(
+        `${option} must be a non-negative integer.`,
+        "INVALID_OPTION"
+      );
+    }
+  }
   const analysis = await analyzeProject(cwdFrom(command));
   if (!analysis.graph)
     throw new DepScopeError(
@@ -46,10 +61,27 @@ export async function diffCommand(
     complete: analysis.graph.complete,
   };
   const result = diffSnapshots(before, after);
+  const thresholds = {
+    "--max-added": [options.maxAdded, result.added.length],
+    "--max-removed": [options.maxRemoved, result.removed.length],
+    "--max-version-changes": [
+      options.maxVersionChanges,
+      result.versionChanges.length,
+    ],
+  } as const;
   const text = [
     `Added: ${result.added.length}`,
     `Removed: ${result.removed.length}`,
     `Version changes: ${result.versionChanges.length}`,
   ].join("\n");
   output(command, analysisJson(analysis, "diff", result), text);
+  for (const [option, [maximum, actual]] of Object.entries(thresholds)) {
+    if (maximum !== undefined && actual > maximum) {
+      throw new DepScopeError(
+        `${option} threshold exceeded: ${actual} > ${maximum}.`,
+        "THRESHOLD_EXCEEDED",
+        2
+      );
+    }
+  }
 }
