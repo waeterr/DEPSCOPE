@@ -1,4 +1,5 @@
 import type { Diagnostic, ProjectInfo } from "../core/models/types.js";
+import { DepScopeError } from "../utils/errors.js";
 import { discoverProject } from "./discovery.js";
 import { readManifest } from "./manifest-reader.js";
 import { detectWorkspaces, type WorkspaceInfo } from "./workspace-detection.js";
@@ -6,6 +7,7 @@ import {
   readNpmGraph,
   type NpmGraphResult,
 } from "../package-managers/npm/lockfile-parser.js";
+import { readPnpmGraph } from "../package-managers/pnpm/lockfile-parser.js";
 
 export interface ProjectAnalysis {
   project: ProjectInfo;
@@ -19,6 +21,8 @@ export async function analyzeProject(cwd: string): Promise<ProjectAnalysis> {
   const manifest = await readManifest(discovery.rootPath);
   const workspace = await detectWorkspaces(discovery.rootPath, manifest);
   const diagnostics: Diagnostic[] = [];
+  const lockfileName = discovery.lockfilePath?.split(/[\\/]/).pop();
+  const packageManager = lockfileName === "pnpm-lock.yaml" ? "pnpm" : "npm";
 
   if (workspace) {
     diagnostics.push({
@@ -36,7 +40,7 @@ export async function analyzeProject(cwd: string): Promise<ProjectAnalysis> {
       code: "CONFLICTING_LOCKFILES",
       severity: "warning",
       title: "Conflicting package-manager metadata",
-      message: `Found npm and ${discovery.conflictingLockfiles.join(", ")} lockfiles. npm package-lock.json was selected.`,
+      message: `Found multiple lockfiles. ${lockfileName ?? "The first lockfile"} was selected.`,
       evidence: discovery.conflictingLockfiles,
       recommendation:
         "Remove unused lockfiles or select an explicit package manager.",
@@ -48,8 +52,8 @@ export async function analyzeProject(cwd: string): Promise<ProjectAnalysis> {
     ...(manifest.name ? { name: manifest.name } : {}),
     ...(manifest.version ? { version: manifest.version } : {}),
     rootPath: discovery.rootPath,
-    packageManager: "npm",
-    ...(discovery.lockfilePath ? { lockfilePath: "package-lock.json" } : {}),
+    packageManager,
+    ...(lockfileName ? { lockfilePath: lockfileName } : {}),
     isWorkspace: manifest.workspaces !== undefined,
     analysisTimestamp: new Date().toISOString(),
   };
@@ -68,7 +72,16 @@ export async function analyzeProject(cwd: string): Promise<ProjectAnalysis> {
     return { project, diagnostics, ...(workspace ? { workspace } : {}) };
   }
 
-  const graph = await readNpmGraph(discovery.rootPath, manifest);
+  if (lockfileName === "yarn.lock") {
+    throw new DepScopeError(
+      "yarn.lock analysis is not yet supported.",
+      "UNSUPPORTED_LOCKFILE"
+    );
+  }
+  const graph =
+    packageManager === "pnpm"
+      ? await readPnpmGraph(discovery.rootPath, manifest)
+      : await readNpmGraph(discovery.rootPath, manifest);
   project.lockfileVersion = graph.lockfileVersion;
   return { project, diagnostics, graph, ...(workspace ? { workspace } : {}) };
 }

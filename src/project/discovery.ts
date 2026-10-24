@@ -33,9 +33,7 @@ export async function discoverProject(path: string): Promise<ProjectDiscovery> {
   return {
     rootPath,
     manifestPath,
-    ...(present.includes("package-lock.json")
-      ? { lockfilePath: resolve(rootPath, "package-lock.json") }
-      : {}),
+    ...(present[0] ? { lockfilePath: resolve(rootPath, present[0]) } : {}),
     ...((await exists(resolve(rootPath, "node_modules/.package-lock.json")))
       ? {
           installedLockfilePath: resolve(
@@ -45,9 +43,7 @@ export async function discoverProject(path: string): Promise<ProjectDiscovery> {
         }
       : {}),
     hasNodeModules: await exists(resolve(rootPath, "node_modules")),
-    conflictingLockfiles: present.filter(
-      (file) => file !== "package-lock.json"
-    ),
+    conflictingLockfiles: present.slice(1),
   };
 }
 
