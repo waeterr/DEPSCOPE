@@ -1,5 +1,4 @@
 import type { Diagnostic, ProjectInfo } from "../core/models/types.js";
-import { DepScopeError } from "../utils/errors.js";
 import { discoverProject } from "./discovery.js";
 import { readManifest } from "./manifest-reader.js";
 import { detectWorkspaces, type WorkspaceInfo } from "./workspace-detection.js";
@@ -8,6 +7,7 @@ import {
   type NpmGraphResult,
 } from "../package-managers/npm/lockfile-parser.js";
 import { readPnpmGraph } from "../package-managers/pnpm/lockfile-parser.js";
+import { readYarnGraph } from "../package-managers/yarn/lockfile-parser.js";
 
 export interface ProjectAnalysis {
   project: ProjectInfo;
@@ -22,7 +22,12 @@ export async function analyzeProject(cwd: string): Promise<ProjectAnalysis> {
   const workspace = await detectWorkspaces(discovery.rootPath, manifest);
   const diagnostics: Diagnostic[] = [];
   const lockfileName = discovery.lockfilePath?.split(/[\\/]/).pop();
-  const packageManager = lockfileName === "pnpm-lock.yaml" ? "pnpm" : "npm";
+  const packageManager =
+    lockfileName === "pnpm-lock.yaml"
+      ? "pnpm"
+      : lockfileName === "yarn.lock"
+        ? "yarn"
+        : "npm";
 
   if (workspace) {
     diagnostics.push({
@@ -72,16 +77,12 @@ export async function analyzeProject(cwd: string): Promise<ProjectAnalysis> {
     return { project, diagnostics, ...(workspace ? { workspace } : {}) };
   }
 
-  if (lockfileName === "yarn.lock") {
-    throw new DepScopeError(
-      "yarn.lock analysis is not yet supported.",
-      "UNSUPPORTED_LOCKFILE"
-    );
-  }
   const graph =
     packageManager === "pnpm"
       ? await readPnpmGraph(discovery.rootPath, manifest)
-      : await readNpmGraph(discovery.rootPath, manifest);
+      : packageManager === "yarn"
+        ? await readYarnGraph(discovery.rootPath, manifest)
+        : await readNpmGraph(discovery.rootPath, manifest);
   project.lockfileVersion = graph.lockfileVersion;
   return { project, diagnostics, graph, ...(workspace ? { workspace } : {}) };
 }
