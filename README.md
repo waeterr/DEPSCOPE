@@ -1,4 +1,4 @@
-# DEPSCOPE
+# PACKAGELENS
 
 <div align="center">
 
@@ -6,15 +6,15 @@
 
 Local-first dependency intelligence CLI for JavaScript and TypeScript projects.
 
-[![CI](https://github.com/waeterr/DEPSCOPE/actions/workflows/ci.yml/badge.svg)](https://github.com/waeterr/DEPSCOPE/actions/workflows/ci.yml)
+[![CI](https://github.com/waeterr/PACKAGELENS/actions/workflows/ci.yml/badge.svg)](https://github.com/waeterr/PACKAGELENS/actions/workflows/ci.yml)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
 </div>
 
-## Why DEPSCOPE?
+## Why PACKAGELENS?
 
-Large dependency trees hide cost, duplication, and risk. DEPSCOPE reads local project metadata and helps answer:
+Large dependency trees hide cost, duplication, and risk. PACKAGELENS reads local project metadata and helps answer:
 
 - What packages are installed?
 - Why is a package present?
@@ -64,11 +64,11 @@ Workspace projects use the root lockfile. Per-workspace package analysis remains
 
 ## Installation
 
-DEPSCOPE is not published to npm yet. Use local development installation:
+PACKAGELENS is not published to npm yet. Use local development installation:
 
 ```bash
-git clone https://github.com/waeterr/DEPSCOPE.git
-cd DEPSCOPE
+git clone https://github.com/waeterr/PACKAGELENS.git
+cd PACKAGELENS
 npm install
 npm run build
 npm link
@@ -77,8 +77,8 @@ npm link
 Verify:
 
 ```bash
-depscope --version
-depscope --help
+packagelens --version
+packagelens --help
 ```
 
 ## Quick start
@@ -86,24 +86,24 @@ depscope --help
 Run from a target JavaScript/TypeScript project:
 
 ```bash
-depscope scan
-depscope tree
-depscope stats
-depscope why <package>
-depscope duplicates
+packagelens scan
+packagelens tree
+packagelens stats
+packagelens why <package>
+packagelens duplicates
 ```
 
 Analyze another project:
 
 ```bash
-depscope scan --cwd ../another-project
+packagelens scan --cwd ../another-project
 ```
 
 Use `--json` for machine-readable output:
 
 ```bash
-depscope report --json
-depscope graph --format json
+packagelens report --json
+packagelens graph --format json
 ```
 
 ## Commands
@@ -131,10 +131,10 @@ Threshold violations exit with code `2`. Invalid usage and analysis failures exi
 
 ```bash
 # Fail if duplicate package groups or diagnostics exist.
-depscope report --json --max-duplicates 0 --max-diagnostics 0
+packagelens report --json --max-duplicates 0 --max-diagnostics 0
 
 # Fail on dependency changes relative to a snapshot.
-depscope diff --from <snapshot-id> --json \
+packagelens diff --from <snapshot-id> --json \
   --max-added 0 \
   --max-removed 0 \
   --max-version-changes 0
@@ -144,7 +144,7 @@ GitHub Actions:
 
 ```yaml
 - name: Dependency policy
-  run: npx depscope report --json --max-duplicates 0 --max-diagnostics 0
+  run: npx packagelens report --json --max-duplicates 0 --max-diagnostics 0
 ```
 
 ## Development

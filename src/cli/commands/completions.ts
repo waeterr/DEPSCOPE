@@ -22,18 +22,18 @@ export async function completionsCommand(shell: string): Promise<void> {
   if (shell === "bash") {
     console.log(
       [
-        "_depscope() {",
+        "_packagelens() {",
         `  local commands=\"${commands.join(" ")}\"`,
         '  COMPREPLY=( $(compgen -W "$commands" -- "${COMP_WORDS[1]}") )',
         "}",
-        "complete -F _depscope depscope",
+        "complete -F _packagelens packagelens",
       ].join("\n")
     );
     return;
   }
   if (shell === "zsh") {
     console.log(
-      `#compdef depscope\n_arguments '1:command:(${commands.join(" ")})'`
+      `#compdef packagelens\n_arguments '1:command:(${commands.join(" ")})'`
     );
     return;
   }

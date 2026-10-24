@@ -7,7 +7,7 @@ describe("CLI Help", () => {
       encoding: "utf-8",
       cwd: process.cwd(),
     });
-    expect(output).toContain("depscope");
+    expect(output).toContain("packagelens");
     expect(output).toContain("Usage:");
   });
 
@@ -16,7 +16,7 @@ describe("CLI Help", () => {
       encoding: "utf-8",
       cwd: process.cwd(),
     });
-    expect(output).toContain("depscope");
+    expect(output).toContain("packagelens");
   });
 
   it("should display overview when no arguments", () => {
@@ -24,7 +24,7 @@ describe("CLI Help", () => {
       encoding: "utf-8",
       cwd: process.cwd(),
     });
-    expect(output).toContain("DEPSCOPE");
+    expect(output).toContain("PACKAGELENS");
     expect(output).toContain("Understand What Your Dependencies Are Doing");
     expect(output).toContain("scan");
     expect(output).toContain("tree");

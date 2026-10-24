@@ -28,7 +28,7 @@ export async function reportCommand(
     diagnostics: analysis.diagnostics,
   };
   const text = [
-    "DEPSCOPE REPORT",
+    "PACKAGELENS REPORT",
     "",
     `Project: ${analysis.project.name ?? "unnamed"}`,
     `Package manager: ${analysis.project.packageManager ?? "unknown"}`,

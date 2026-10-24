@@ -7,7 +7,7 @@ import { analyzeProject } from "../../src/project/analyze-project.js";
 async function temporaryProject(
   files: Record<string, string>
 ): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "depscope-"));
+  const root = await mkdtemp(join(tmpdir(), "packagelens-"));
   await Promise.all(
     Object.entries(files).map(([name, content]) =>
       writeFile(join(root, name), content)

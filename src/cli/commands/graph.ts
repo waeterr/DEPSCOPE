@@ -55,7 +55,7 @@ function toDot(data: {
   const escape = (value: string): string =>
     value.replaceAll("\\", "\\\\").replaceAll('"', '\\"');
   return [
-    "digraph depscope {",
+    "digraph packagelens {",
     "  rankdir=LR;",
     ...data.nodes.map(
       (node) =>

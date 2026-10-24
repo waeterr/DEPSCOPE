@@ -30,7 +30,7 @@ function graph(version: string) {
 
 describe("snapshots", () => {
   it("saves, lists, and compares snapshots", async () => {
-    const root = await mkdtemp(join(tmpdir(), "depscope-snapshot-"));
+    const root = await mkdtemp(join(tmpdir(), "packagelens-snapshot-"));
     try {
       const first = await saveSnapshot({
         projectRoot: root,

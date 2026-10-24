@@ -65,7 +65,7 @@ const snapshotSchema = z.object({
 export type DependencySnapshot = z.infer<typeof snapshotSchema>;
 
 export function snapshotDirectory(projectRoot: string): string {
-  return join(projectRoot, ".depscope", "snapshots");
+  return join(projectRoot, ".packagelens", "snapshots");
 }
 
 export async function saveSnapshot(input: {

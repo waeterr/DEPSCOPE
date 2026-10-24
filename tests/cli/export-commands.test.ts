@@ -21,7 +21,7 @@ describe("CLI export commands", () => {
 
   it("exports a graph as DOT", () => {
     const output = run("graph", "--format", "dot");
-    expect(output).toContain("digraph depscope");
+    expect(output).toContain("digraph packagelens");
     expect(output).toContain("node_modules/alpha");
   });
 
@@ -43,6 +43,6 @@ describe("CLI export commands", () => {
       ["dist/index.js", "completions", "bash"],
       { encoding: "utf8" }
     );
-    expect(output).toContain("complete -F _depscope depscope");
+    expect(output).toContain("complete -F _packagelens packagelens");
   });
 });

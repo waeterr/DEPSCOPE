@@ -26,7 +26,7 @@ describe("CLI advanced commands", () => {
 
   it("generates a consolidated report", () => {
     const output = run("report");
-    expect(output).toContain("DEPSCOPE REPORT");
+    expect(output).toContain("PACKAGELENS REPORT");
     expect(output).toContain("fixture-project");
   });
 

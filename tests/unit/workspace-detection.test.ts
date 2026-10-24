@@ -12,7 +12,7 @@ const manifest = JSON.stringify({
 
 describe("workspace detection", () => {
   it("detects package directories from wildcard workspaces", async () => {
-    const root = await mkdtemp(join(tmpdir(), "depscope-workspace-"));
+    const root = await mkdtemp(join(tmpdir(), "packagelens-workspace-"));
     try {
       await mkdir(join(root, "packages", "alpha"), { recursive: true });
       await mkdir(join(root, "packages", "beta"), { recursive: true });

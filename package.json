@@ -1,25 +1,27 @@
 {
-  "name": "depscope",
+  "name": "packagelens",
   "version": "0.1.0",
   "description": "Understand What Your Dependencies Are Doing - Dependency Intelligence CLI",
   "type": "module",
   "bin": {
-    "depscope": "./dist/index.js"
+    "packagelens": "./dist/index.js"
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/waeterr/DEPSCOPE.git"
+    "url": "git+https://github.com/waeterr/PACKAGELENS.git"
   },
   "bugs": {
-    "url": "https://github.com/waeterr/DEPSCOPE/issues"
+    "url": "https://github.com/waeterr/PACKAGELENS/issues"
   },
-  "homepage": "https://github.com/waeterr/DEPSCOPE#readme",
+  "homepage": "https://github.com/waeterr/PACKAGELENS#readme",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -42,7 +44,7 @@
     "tree",
     "graph"
   ],
-  "author": "",
+  "author": "waeterr",
   "license": "MIT",
   "dependencies": {
     "commander": "^12.1.0",

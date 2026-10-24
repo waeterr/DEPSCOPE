@@ -17,7 +17,7 @@ export async function scanCommand(
     diagnostics: analysis.diagnostics,
   };
   const text = [
-    "DEPSCOPE",
+    "PACKAGELENS",
     "",
     `Project: ${analysis.project.name ?? "unnamed"}`,
     `Manager: ${analysis.project.packageManager ?? "unknown"}`,

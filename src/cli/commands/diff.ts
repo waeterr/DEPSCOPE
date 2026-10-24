@@ -40,7 +40,7 @@ export async function diffCommand(
     : snapshots[0];
   if (!before)
     throw new DepScopeError(
-      "No matching snapshot found. Create one with depscope snapshot first.",
+      "No matching snapshot found. Create one with packagelens snapshot first.",
       "SNAPSHOT_NOT_FOUND"
     );
   const after = {
