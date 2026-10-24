@@ -9,7 +9,11 @@ import { DepScopeError } from "../../utils/errors.js";
 import type { ProjectManifest } from "../../project/manifest-schema.js";
 import type { NpmGraphResult } from "../npm/lockfile-parser.js";
 
-type LockEntry = { selectors: string[]; version?: string; dependencies: string[] };
+type LockEntry = {
+  selectors: string[];
+  version?: string;
+  dependencies: string[];
+};
 
 export async function readYarnGraph(
   projectRoot: string,
@@ -19,7 +23,10 @@ export async function readYarnGraph(
   try {
     source = await readFile(resolve(projectRoot, "yarn.lock"), "utf8");
   } catch {
-    throw new DepScopeError("Could not read yarn.lock.", "LOCKFILE_READ_FAILED");
+    throw new DepScopeError(
+      "Could not read yarn.lock.",
+      "LOCKFILE_READ_FAILED"
+    );
   }
   const entries = parseYarnLock(source);
   if (entries.length === 0) {
@@ -101,7 +108,10 @@ function nameFromSelector(selector: string): string | undefined {
   return index > 0 ? selector.slice(0, index) : undefined;
 }
 
-function directKinds(name: string, manifest: ProjectManifest): DependencyKind[] {
+function directKinds(
+  name: string,
+  manifest: ProjectManifest
+): DependencyKind[] {
   const result: DependencyKind[] = [];
   if (manifest.dependencies?.[name]) result.push("prod");
   if (manifest.devDependencies?.[name]) result.push("dev");

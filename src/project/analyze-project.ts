@@ -71,7 +71,7 @@ export async function analyzeProject(cwd: string): Promise<ProjectAnalysis> {
       message:
         "Only declared dependencies can be analyzed; the resolved transitive graph is unavailable.",
       recommendation:
-        "Use your normal package-manager workflow to create a package-lock.json.",
+        "Use your package manager to create a supported lockfile.",
       confidence: "high",
     });
     return { project, diagnostics, ...(workspace ? { workspace } : {}) };

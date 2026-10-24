@@ -78,11 +78,7 @@ export function registerCommands(program: Command): void {
       "Fail if duplicate package groups exceed N",
       Number
     )
-    .option(
-      "--max-diagnostics <n>",
-      "Fail if diagnostics exceed N",
-      Number
-    )
+    .option("--max-diagnostics <n>", "Fail if diagnostics exceed N", Number)
     .action(reportCommand);
 
   program

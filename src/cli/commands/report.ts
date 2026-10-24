@@ -62,7 +62,8 @@ export async function reportCommand(
   }
   output(command, analysisJson(analysis, "report", data), text);
   const limit =
-    options.maxDuplicates !== undefined && duplicates.length > options.maxDuplicates
+    options.maxDuplicates !== undefined &&
+    duplicates.length > options.maxDuplicates
       ? `Duplicate package groups (${duplicates.length}) exceed maximum (${options.maxDuplicates}).`
       : options.maxDiagnostics !== undefined &&
           analysis.diagnostics.length > options.maxDiagnostics

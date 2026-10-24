@@ -18,14 +18,20 @@ export async function readPnpmGraph(
   try {
     raw = parse(await readFile(resolve(projectRoot, "pnpm-lock.yaml"), "utf8"));
   } catch {
-    throw new DepScopeError("Could not parse pnpm-lock.yaml.", "INVALID_LOCKFILE");
+    throw new DepScopeError(
+      "Could not parse pnpm-lock.yaml.",
+      "INVALID_LOCKFILE"
+    );
   }
   if (
     !isRecord(raw) ||
     (typeof raw.lockfileVersion !== "string" &&
       typeof raw.lockfileVersion !== "number")
   ) {
-    throw new DepScopeError("Invalid pnpm-lock.yaml structure.", "INVALID_LOCKFILE");
+    throw new DepScopeError(
+      "Invalid pnpm-lock.yaml structure.",
+      "INVALID_LOCKFILE"
+    );
   }
   const packages = isRecord(raw.packages) ? raw.packages : {};
   const nodes = new Map<string, DependencyNode>();
@@ -52,7 +58,10 @@ export async function readPnpmGraph(
   }
   for (const [key, record] of Object.entries(packages)) {
     if (!nodes.has(key) || !isRecord(record)) continue;
-    for (const dependencies of [record.dependencies, record.optionalDependencies]) {
+    for (const dependencies of [
+      record.dependencies,
+      record.optionalDependencies,
+    ]) {
       if (!isRecord(dependencies)) continue;
       for (const [name, specifier] of Object.entries(dependencies)) {
         const target = (idsByName.get(name) ?? []).find((id) =>
@@ -66,11 +75,15 @@ export async function readPnpmGraph(
     graph: { nodes, edges, rootIds },
     lockfileVersion: raw.lockfileVersion,
     complete: true,
-    limitations: ["Peer dependency resolution is not represented in pnpm graph output."],
+    limitations: [
+      "Peer dependency resolution is not represented in pnpm graph output.",
+    ],
   };
 }
 
-function packageFromKey(key: string): { name: string; version: string } | undefined {
+function packageFromKey(
+  key: string
+): { name: string; version: string } | undefined {
   const normalized = key.replace(/^\//, "").split("(")[0] ?? "";
   const at = normalized.lastIndexOf("@");
   if (at <= 0) return undefined;
@@ -79,11 +92,15 @@ function packageFromKey(key: string): { name: string; version: string } | undefi
 
 function dependencyVersion(value: unknown): string {
   if (typeof value === "string") return value.replace(/^npm:/, "");
-  if (isRecord(value) && typeof value.version === "string") return value.version;
+  if (isRecord(value) && typeof value.version === "string")
+    return value.version;
   return "";
 }
 
-function directKinds(name: string, manifest: ProjectManifest): DependencyKind[] {
+function directKinds(
+  name: string,
+  manifest: ProjectManifest
+): DependencyKind[] {
   const result: DependencyKind[] = [];
   if (manifest.dependencies?.[name]) result.push("prod");
   if (manifest.devDependencies?.[name]) result.push("dev");

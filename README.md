@@ -2,110 +2,104 @@
 
 **Understand What Your Dependencies Are Doing**
 
-A dependency intelligence tool for JavaScript and TypeScript projects.
+Local-first dependency intelligence CLI for JavaScript and TypeScript projects.
 
-## Status
+## Supported package managers
 
-🚧 **In Development - Milestone 0**
+- npm lockfile v2/v3
+- pnpm lockfile v9
+- Yarn Classic lockfile v1
 
-DEPSCOPE is currently under active development. The foundation is being established.
-
-### Current Status
-
-- ✅ Project foundation (TypeScript, ESM, CLI framework)
-- ⏳ npm lockfile parser
-- ⏳ Dependency graph engine
-- ⏳ Core analysis commands
-
-## Planned Features
-
-- **Dependency Tree Analysis**: Understand your project's dependency hierarchy
-- **Why Analysis**: Explain why a package exists in your project
-- **Duplicate Detection**: Find multiple versions of the same package
-- **Dependency Statistics**: Get insights into dependency counts and types
-- **Health Diagnostics**: Detect project and lockfile issues
-- **Impact Analysis**: Understand the effect of removing or upgrading packages
-- **Snapshot & Comparison**: Track dependency changes over time
+Yarn Berry lockfiles are not yet supported. Workspace projects use the root lockfile; workspace package analysis remains partial.
 
 ## Requirements
 
-- Node.js ≥18.0.0
-- npm (initially; pnpm and Yarn support planned)
+- Node.js >=18
+- A `package.json`
+- A supported lockfile for resolved dependency graph commands
 
-## Installation (Development)
+## Installation
 
 ```bash
-git clone <repository>
-cd depscope
+npm install -g depscope
+```
+
+Development:
+
+```bash
 npm install
 npm run build
 npm link
 ```
 
-## Usage
+## Commands
 
 ```bash
-# Display help
-depscope --help
-
-# Analyze project (coming soon)
+# Project summary and graph inspection
 depscope scan
-
-# Show dependency tree (coming soon)
 depscope tree
-
-# Explain why a package exists (coming soon)
-depscope why <package>
-
-# Find duplicate versions (coming soon)
-depscope duplicates
-
-# Show dependency statistics (coming soon)
 depscope stats
+depscope why <package>
+depscope dependents <package>
+depscope duplicates
+depscope doctor
+
+# Advanced local analysis
+depscope unused
+depscope size
+depscope impact <package>
+depscope report
+
+# Snapshots and comparisons
+depscope snapshot --name before-upgrade
+depscope history
+depscope diff --from <snapshot-id>
+
+# Export and shell integration
+depscope graph --format json
+depscope graph --format dot
+depscope completions bash
+depscope completions zsh
+```
+
+Use `--cwd <path>` to target another project. Add `--json` for machine-readable output.
+
+## CI usage
+
+All threshold failures return exit code `2`; invalid usage and analysis errors return `1`.
+
+```bash
+# Fail if any duplicate package groups or diagnostics exist.
+depscope report --json --max-duplicates 0 --max-diagnostics 0
+
+# Compare current dependencies with a saved snapshot.
+depscope diff --from <snapshot-id> --json \
+  --max-added 0 \
+  --max-removed 0 \
+  --max-version-changes 0
+```
+
+GitHub Actions example:
+
+```yaml
+- name: Dependency policy
+  run: npx depscope report --json --max-duplicates 0 --max-diagnostics 0
 ```
 
 ## Development
 
 ```bash
-# Install dependencies
-npm install
-
-# Build
 npm run build
-
-# Run tests
 npm test
-
-# Watch mode
-npm run test:watch
-
-# Lint
 npm run lint
-
-# Format
-npm run format
-
-# Type check
 npm run typecheck
+npm run format:check
+npm run verify
 ```
 
-## Architecture Principles
+## Principles
 
-- **Local-first**: Core functionality works offline
-- **Read-only by default**: Analysis never modifies your project
-- **Package-manager independent**: Normalized graph model
-- **Evidence-based**: Diagnostics explain their reasoning
-- **Safe by default**: Destructive actions require explicit confirmation
-
-## Project Structure
-
-```
-depscope/
-├── src/
-│   ├── cli/          # Command-line interface
-│   ├── core/         # Analysis engine and graph algorithms
-│   ├── utils/        # Shared utilities
-│   └── ...
-├── tests/            # Test suites
-└── docs/             # Documentation
-```
+- Local-first: no dependency data uploaded.
+- Read-only: analysis does not modify target projects.
+- Deterministic: equivalent input yields equivalent analysis.
+- Evidence-based: diagnostics state limitations.
