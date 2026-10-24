@@ -4,10 +4,15 @@ import {
   calculateStats,
   findDuplicates,
 } from "../../core/analyzer/analysis.js";
+import { DepScopeError } from "../../utils/errors.js";
 import { analysisJson, cwdFrom, output } from "./shared.js";
 
+interface ReportOptions {
+  maxDuplicates?: number;
+}
+
 export async function reportCommand(
-  _options: unknown,
+  options: ReportOptions,
   command: Command
 ): Promise<void> {
   const analysis = await analyzeProject(cwdFrom(command));
@@ -43,5 +48,24 @@ export async function reportCommand(
       ? ["", `Duplicate groups: ${duplicates.map((d) => d.name).join(", ")}`]
       : []),
   ].join("\n");
+  if (
+    options.maxDuplicates !== undefined &&
+    (!Number.isInteger(options.maxDuplicates) || options.maxDuplicates < 0)
+  ) {
+    throw new DepScopeError(
+      "--max-duplicates must be a non-negative integer.",
+      "INVALID_OPTION"
+    );
+  }
   output(command, analysisJson(analysis, "report", data), text);
+  if (
+    options.maxDuplicates !== undefined &&
+    duplicates.length > options.maxDuplicates
+  ) {
+    throw new DepScopeError(
+      `Duplicate package groups (${duplicates.length}) exceed maximum (${options.maxDuplicates}).`,
+      "THRESHOLD_EXCEEDED",
+      2
+    );
+  }
 }

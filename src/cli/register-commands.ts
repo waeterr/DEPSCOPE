@@ -73,6 +73,11 @@ export function registerCommands(program: Command): void {
   program
     .command("report")
     .description("Generate a consolidated dependency report")
+    .option(
+      "--max-duplicates <n>",
+      "Fail if duplicate package groups exceed N",
+      Number
+    )
     .action(reportCommand);
 
   program

@@ -25,6 +25,12 @@ describe("CLI export commands", () => {
     expect(output).toContain("node_modules/alpha");
   });
 
+  it("fails CI when duplicate groups exceed the configured limit", () => {
+    expect(() => run("report", "--max-duplicates", "0")).toThrow(
+      /Duplicate package groups \(1\) exceed maximum \(0\)/
+    );
+  });
+
   it("generates bash completions", () => {
     const output = execFileSync(
       "node",
