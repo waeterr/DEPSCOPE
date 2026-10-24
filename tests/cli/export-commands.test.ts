@@ -31,6 +31,12 @@ describe("CLI export commands", () => {
     );
   });
 
+  it("rejects an invalid diagnostics threshold", () => {
+    expect(() => run("report", "--max-diagnostics", "-1")).toThrow(
+      /--max-diagnostics must be a non-negative integer/
+    );
+  });
+
   it("generates bash completions", () => {
     const output = execFileSync(
       "node",

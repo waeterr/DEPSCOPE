@@ -9,6 +9,7 @@ import { analysisJson, cwdFrom, output } from "./shared.js";
 
 interface ReportOptions {
   maxDuplicates?: number;
+  maxDiagnostics?: number;
 }
 
 export async function reportCommand(
@@ -48,24 +49,26 @@ export async function reportCommand(
       ? ["", `Duplicate groups: ${duplicates.map((d) => d.name).join(", ")}`]
       : []),
   ].join("\n");
-  if (
-    options.maxDuplicates !== undefined &&
-    (!Number.isInteger(options.maxDuplicates) || options.maxDuplicates < 0)
-  ) {
-    throw new DepScopeError(
-      "--max-duplicates must be a non-negative integer.",
-      "INVALID_OPTION"
-    );
+  for (const [option, value] of Object.entries({
+    "--max-duplicates": options.maxDuplicates,
+    "--max-diagnostics": options.maxDiagnostics,
+  })) {
+    if (value !== undefined && (!Number.isInteger(value) || value < 0)) {
+      throw new DepScopeError(
+        `${option} must be a non-negative integer.`,
+        "INVALID_OPTION"
+      );
+    }
   }
   output(command, analysisJson(analysis, "report", data), text);
-  if (
-    options.maxDuplicates !== undefined &&
-    duplicates.length > options.maxDuplicates
-  ) {
-    throw new DepScopeError(
-      `Duplicate package groups (${duplicates.length}) exceed maximum (${options.maxDuplicates}).`,
-      "THRESHOLD_EXCEEDED",
-      2
-    );
+  const limit =
+    options.maxDuplicates !== undefined && duplicates.length > options.maxDuplicates
+      ? `Duplicate package groups (${duplicates.length}) exceed maximum (${options.maxDuplicates}).`
+      : options.maxDiagnostics !== undefined &&
+          analysis.diagnostics.length > options.maxDiagnostics
+        ? `Diagnostics (${analysis.diagnostics.length}) exceed maximum (${options.maxDiagnostics}).`
+        : undefined;
+  if (limit) {
+    throw new DepScopeError(limit, "THRESHOLD_EXCEEDED", 2);
   }
 }
