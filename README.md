@@ -6,7 +6,7 @@
 
 Local-first dependency intelligence CLI for JavaScript and TypeScript projects.
 
-[![CI](https://github.com/waeterr/PACKAGELENS/actions/workflows/ci.yml/badge.svg)](https://github.com/waeterr/PACKAGELENS/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/%40marchw%2Fpackagelens?style=flat-square&logo=npm&label=npm)](https://www.npmjs.com/package/@marchw/packagelens)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
@@ -64,7 +64,26 @@ Workspace projects use the root lockfile. Per-workspace package analysis remains
 
 ## Installation
 
-PACKAGELENS is not published to npm yet. Use local development installation:
+Install globally:
+
+```bash
+npm install -g @marchw/packagelens
+```
+
+Then run:
+
+```bash
+packagelens --version
+packagelens --help
+```
+
+Run once without global installation:
+
+```bash
+npx @marchw/packagelens --help
+```
+
+Development setup:
 
 ```bash
 git clone https://github.com/waeterr/PACKAGELENS.git
@@ -72,13 +91,6 @@ cd PACKAGELENS
 npm install
 npm run build
 npm link
-```
-
-Verify:
-
-```bash
-packagelens --version
-packagelens --help
 ```
 
 ## Quick start
@@ -144,7 +156,7 @@ GitHub Actions:
 
 ```yaml
 - name: Dependency policy
-  run: npx packagelens report --json --max-duplicates 0 --max-diagnostics 0
+  run: npx @marchw/packagelens report --json --max-duplicates 0 --max-diagnostics 0
 ```
 
 ## Development

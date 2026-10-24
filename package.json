@@ -1,5 +1,5 @@
 {
-  "name": "packagelens",
+  "name": "@marchw/packagelens",
   "version": "0.1.0",
   "description": "Understand What Your Dependencies Are Doing - Dependency Intelligence CLI",
   "type": "module",
@@ -47,6 +47,7 @@
   "author": "waeterr",
   "license": "MIT",
   "dependencies": {
+    "@marchw/packagelens": "^0.1.0",
     "commander": "^12.1.0",
     "picocolors": "^1.1.1",
     "yaml": "^2.9.1",
